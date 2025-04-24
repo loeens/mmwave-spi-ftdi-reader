@@ -76,7 +76,7 @@ class RadarCubeReader:
     
     def _parse_frame(self, raw_frame_bytes: bytes) -> RadarCube1D:
         """
-        Parses the raw byte data into a RadarCube object.
+        Parses the raw byte data into a RadarCube1D object.
 
         Args:
             raw_frame_bytes (bytes): The raw data received from SPI.
@@ -93,10 +93,23 @@ class RadarCubeReader:
             raise ValueError(f"Data length mismatch: Expected {self.radar_cube_n_bytes} bytes, received {received_len} bytes.")
 
         try:
-            # TODO: parse frame raw bytes into RadarCube obj
+            # Each set of 4 Byte arrives in Byte order [Byte_D, Byte_C, Byte_B, Byte_A], so order needs to be switched
+            # (not the most elegant solution)
+            frame_bytes_correct_order = bytearray()
+            # iterate through the received bytes in chunks of 4 bytes
+            for i in range(0, len(raw_frame_bytes), 4):
+                byte_D = raw_frame_bytes[i]
+                byte_C = raw_frame_bytes[i + 1]
+                byte_B = raw_frame_bytes[i + 2]
+                byte_A = raw_frame_bytes[i + 3]
 
-            # interpret the byte buffer as pairs of 16-bit signed integers (int16 real, int16 imag)
-            data_int16 = np.frombuffer(raw_frame_bytes, dtype=np.int16)
+                frame_bytes_correct_order.append(byte_A)
+                frame_bytes_correct_order.append(byte_B)
+                frame_bytes_correct_order.append(byte_C)
+                frame_bytes_correct_order.append(byte_D)
+            
+            # form into int16 so we can then convert them into pairs of real and imaginary later on
+            data_int16 = np.frombuffer(frame_bytes_correct_order, dtype=np.int16)
 
             # reshape into (num_complex_samples, 2) where the last dimension holds [real, imag]
             num_complex_samples = self.num_doppler_chirps * self.num_virt_antennas * self.num_range_bins
@@ -109,6 +122,7 @@ class RadarCubeReader:
 
             # reshape 1D cmplx_data_flat array into RadarCube SDK data format
             # MMWAVE-L-SDK format is Cube[chirp][antenna][range]
+            # In C multi-dimensional arrays are stored in contiguous memory in row-major order
             radar_cube_data_sdk_format = cmplx_data_flat.reshape((
                 self.num_doppler_chirps,
                 self.num_virt_antennas,
