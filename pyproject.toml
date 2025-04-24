@@ -1,0 +1,10 @@
+[project]
+name = "mmwave_spi_ftdi_reader"
+version = "0.1.0"
+description = "Unofficial SPI via FTDI USB cable data reader for TI mmWave sensors"
+authors = [{name="Leon Braungardt", email="leon.braungardt@icloud.com"}]
+dependencies = ["pyftdi", "numpy", "xarray"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
