@@ -10,10 +10,12 @@ This project provides a Python interface to read and interpret 1D radar cube dat
 The library handles the low-level SPI communication and synchronization using the `pyftdi` library and parses the raw byte streams into structured data using `numpy` and `xarray` for easy handling and analysis of the radar cube dimensions.
 
 ## Features
-* **SPI Communication:** 
-    - interfaces with FTDI-based SPI adapters using `pyftdi`, not requiring any proprietary drivers or DLLs
+* **SPI communication:** 
+    - no proprietary drivers: Interfaces with FTDI-based SPI adapters using `pyftdi`, not requiring any proprietary drivers or DLLs
+    - low-cost hardware: Requires only the TI IWRL6432BOOST evaluation module and a standard FTDI USB serial cable (C232HM-DDHSL-0), offering an affordable entry into mmWave radar
 
-* **Radar Cube Streaming in real-time:** 
+* **Radar Cube streaming in real-time:** 
+    - easy setup
     - continuously reads radar cube data based on a configured length and stores them in a `RadarCube1D` object
     - `RadarCube1D` is essentially a `xarray.DataArray`, allowing for easy accessibility of the cube's dimensions
 
@@ -65,7 +67,7 @@ rangeprof0  = cube.data.isel(doppler_chirp=0, virt_antenna=0)
 For a full example, please refer to the `example.py` script which displays a range 
 profile from one chirp and one antenna of each radar cube.
 
-<img src="images/readme_demo.gif" width="650">
+<img src="images/readme_demo.gif" width="750">
 
 ## Installation
 
