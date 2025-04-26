@@ -1,6 +1,10 @@
+"""
+This module defines base and derived classes for representing radar cube data.
+It includes classes for 1D processed radar cubes (result of Range-FFT).
+"""
 import time
 import numpy as np
-import xarray as xr 
+import xarray as xr
 
 class RadarCube:
     """
@@ -41,10 +45,14 @@ class RadarCube:
                 A tuple of strings specifying the names of the dimensions
                 for the xarray.DataArray.
             xdarr_name (str):
-                Name of the xarray.               
+                Name of the xarray DataArray.
             timestamp (float, optional):
                 Epoch time in seconds when this frame was captured.
                 Defaults to the current time if None.
+
+        Raises:
+            TypeError: If the base class is instantiated directly or if data is not a NumPy array.
+            ValueError: If the input data dimensions do not match the expected number of dimensions.
         """
         # ensure that class is not instantiated directly
         if self.__class__ == RadarCube:
@@ -66,13 +74,15 @@ class RadarCube:
         )
 
         # add timestamp to xarray .attrs metadata dict
-        current_timestamp = timestamp or time.time()
+        current_timestamp = timestamp if timestamp is not None else time.time() # Use explicit check for None
         self.data.attrs['timestamp'] = current_timestamp
 
 class RadarCube1D(RadarCube):
     """
     Represents a 1D radar cube (after Range-FFT processing),
     handling both interleaved and non-interleaved formats.
+
+    Inherits from RadarCube to use xarray for data management.
 
     Stores radar data as an xarray.DataArray with dimensions depending
     on the 'interleaved' flag:
@@ -86,6 +96,8 @@ class RadarCube1D(RadarCube):
             The raw NumPy data can be accessed via `cube.data.values`.
             Metadata attributes, including timestamp and interleaved status,
             are stored in `cube.data.attrs`.
+        interleaved (bool):
+             Indicates whether the data is stored in the interleaved format.
 
     Usage:
         # Assume 'arr_interleaved' is a NumPy array (rangebin, virt_antenna, doppler_chirp)
@@ -137,6 +149,12 @@ class RadarCube1D(RadarCube):
             timestamp (float, optional):
                 Epoch time in seconds when this frame was captured.
                 Defaults to the current time if None.
+
+        Raises:
+            TypeError: If data is not a NumPy array (inherited from base class).
+            ValueError: If the input data dimensions do not match the expected
+                        dimensions for the given 'interleaved' status
+                        (check handled by base class dimension check).
         """
         self.interleaved = interleaved
 
@@ -149,6 +167,5 @@ class RadarCube1D(RadarCube):
         # call the parent class constructor with the data and selected dimensions
         super().__init__(data, dims_to_use, self._RADAR_CUBE_1D_XR_NAME, timestamp=timestamp)
 
-        # add the interleaved status as an attribute to the DataArray
+        # add the interleaved status as an attribute to the DataArray metadata
         self.data.attrs['interleaved'] = self.interleaved
-
