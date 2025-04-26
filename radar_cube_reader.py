@@ -12,6 +12,14 @@ class RadarCubeReader:
     SpiFtdiFrameReader. Acts as an iterator, yielding RadarCube objects.
 
     Usage:
+        reader = RadarCubeReader(num_tx_antennas=2,
+                        num_rx_antennas=3,
+                        num_range_bins=64,
+                        num_chirps_per_frame=8,
+                        spi_uri="ftdi://ftdi:232h/1?latency=1")
+
+        for cube in reader:
+            print(cube.data)
 
     """
     def __init__(self,
@@ -33,10 +41,11 @@ class RadarCubeReader:
             num_chirps_per_frame (int): Number of chirps per frame.
             spi_uri: (str)          : SPI FTDI URI (defaults to ftdi://ftdi:232h/1?latency=1)
             spi_cs: (int)           : SPI Chip Select (defaults to 0)
-            spi_freq: (float)       : SPI frequency in Hz (defaults to 15e6 = 15 MHz)
+            spi_freq: (float)       : SPI frequency in Hz (defaults to 30e6 = 30 MHz)
             spi_mode: (int)         : SPI mode (defaults to 0)
             spi_max_chunk_size: (int): SPI max chunk size the SPI USB chip supports in one transfer, 
-                                            minus required overhead (defaults to 65500)
+                                            minus required overhead (defaults to 65024). 
+                                            Must be divisable by 4.
         Raises:
             ValueError: If parameters result in non-integer dimensions or invalid configurations.
             RuntimeError: If the underlying SpiFtdiFrameReader cannot be initialized.                
