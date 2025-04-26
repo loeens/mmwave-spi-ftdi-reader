@@ -21,9 +21,9 @@ class RadarCubeReader:
                 num_chirps_per_frame: int,
                 spi_uri: str = "ftdi://ftdi:232h/1?latency=1",
                 spi_cs: int = 0,
-                spi_freq: float = 15e6,
+                spi_freq: float = 30e6,
                 spi_mode: int = 0,
-                spi_max_chunk_size: int = 64500
+                spi_max_chunk_size: int = 65024
                ):
         """
         Args:
@@ -93,36 +93,20 @@ class RadarCubeReader:
             raise ValueError(f"Data length mismatch: Expected {self.radar_cube_n_bytes} bytes, received {received_len} bytes.")
 
         try:
-            # Each set of 4 Byte arrives in Byte order [Byte_D, Byte_C, Byte_B, Byte_A], so order needs to be switched
-            # (not the most elegant solution)
-            frame_bytes_correct_order = bytearray()
-            # iterate through the received bytes in chunks of 4 bytes
-            for i in range(0, len(raw_frame_bytes), 4):
-                byte_D = raw_frame_bytes[i]
-                byte_C = raw_frame_bytes[i + 1]
-                byte_B = raw_frame_bytes[i + 2]
-                byte_A = raw_frame_bytes[i + 3]
+            # cast into int16, since one radar cube value is of type cmplx16ImRe_t, which is made up of two int16
+            #   so two subsequent Bytes transferred are transformed into one int16
+            data_int16 = np.frombuffer(raw_frame_bytes, dtype=np.int16)
 
-                frame_bytes_correct_order.append(byte_A)
-                frame_bytes_correct_order.append(byte_B)
-                frame_bytes_correct_order.append(byte_C)
-                frame_bytes_correct_order.append(byte_D)
-            
-            # form into int16 so we can then convert them into pairs of real and imaginary later on
-            data_int16 = np.frombuffer(frame_bytes_correct_order, dtype=np.int16)
-
-            # reshape into (num_complex_samples, 2) where the last dimension holds [real, imag]
+            # reshape the array of int16 into pairs of real, imag components
             num_complex_samples = self.num_doppler_chirps * self.num_virt_antennas * self.num_range_bins
             data_int16_reshaped = data_int16.reshape((num_complex_samples, 2))
 
-            # convert to complex numbers (complex64: float32 real + float32 imag)
-            # cast to float32 first to avoid potential issues
+            # convert the int16 into actual complex values
             data_float32 = data_int16_reshaped.astype(np.float32)
             cmplx_data_flat = data_float32[:, 0] + 1j * data_float32[:, 1]
 
             # reshape 1D cmplx_data_flat array into RadarCube SDK data format
-            # MMWAVE-L-SDK format is Cube[chirp][antenna][range]
-            # In C multi-dimensional arrays are stored in contiguous memory in row-major order
+            #   MMWAVE-L-SDK format is Cube[chirp][antenna][range]
             radar_cube_data_sdk_format = cmplx_data_flat.reshape((
                 self.num_doppler_chirps,
                 self.num_virt_antennas,
