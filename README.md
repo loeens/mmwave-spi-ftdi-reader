@@ -36,7 +36,7 @@ The library handles the low-level SPI communication and synchronization using th
 ### Simple example
 Make sure to adjust the parameters of the `RadarCubeReader` to your chirp parameters and FTDI device.
 ```python
-from mmwave-spi-ftdi-reader import RadarCubeReader
+from mmwave_spi_ftdi_reader import RadarCubeReader
 
 # set up the reader
 reader = RadarCubeReader(
