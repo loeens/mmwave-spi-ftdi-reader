@@ -71,21 +71,20 @@ profile from one chirp and one antenna of each radar cube.
 
 ## Installation
 
-1. **Clone the repository:**
+1. **PyFtdi installation:**
+The `PyFtdi` library requires prerequisites to access the FTDI device. Please follow the instructions below for your operating system. Refer to the [official PyFtdi installation documentation](https://eblot.github.io/pyftdi/installation.html) for the most up-to-date information.
+
+2. **Clone the repository:**
     ```bash
     git clone https://github.com/loeens/mmwave-spi-ftdi-reader
     cd mmwave-spi-ftdi-reader
     ```
 
-2. **PyFtdi setup:**
-The pyftdi library requires specific prerequisites to access the FTDI device, especially concerning user permissions. Please follow the instructions below for your operating system. Refer to the [official PyFtdi installation documentation](https://eblot.github.io/pyftdi/installation.html) for the most up-to-date information.
-
 3. **Install the Python module and dependencies:**
-Run this command from the root directory of the cloned repository:
     ```bash
     pip install .
     ```
 ## FAQ
 ### Why stream Radar Cube data and not ADC data?
-The Rangeproc DPU efficiently calculates the Range-FFT during the `framePeriod` (which at minimum is 100ms on the IWRL6432). Therefore the calculation of the Range-FFT doesn't add up on the processing time required for each frame on the host computer. Admittedly, this is also due to my own personal requirements in the past. Streaming of ADC data from TI's demo project is planned for a future update though.
+The Rangeproc DPU efficiently calculates the Range-FFT during the `framePeriod` (which at minimum is 100ms on the IWRL6432). Therefore the calculation of the Range-FFT doesn't add up on the processing time required for each frame on the host computer. Streaming of ADC data from TI's demo project is planned for a future update though.
 
