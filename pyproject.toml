@@ -1,7 +1,7 @@
 [project]
-name = "mmwave_spi_ftdi_reader"
+name = "mmwave-spi-ftdi-reader"
 version = "0.1.0"
-description = "Unofficial SPI via FTDI USB cable data reader Python module for TI mmWave sensors"
+description = "An unofficial Python library for streaming and parsing 1D Radar Cube data from TI mmWave sensors via SPI using an FTDI adapter"
 authors = [{name="Leon Braungardt", email="leon.braungardt@icloud.com"}]
 dependencies = ["pyftdi", "numpy", "xarray"]
 
