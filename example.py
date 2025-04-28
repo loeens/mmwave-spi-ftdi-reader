@@ -39,7 +39,7 @@ SPI_URI = "ftdi://ftdi:232h/1?latency=1"
 SPI_CS = 0
 SPI_FREQ = 30e6
 SPI_MODE = 0
-SPI_MAX_CHUNK_SIZE = 65024 # Must be divisible by 4
+SPI_MAX_CHUNK_SIZE = 65280 # Must be divisible by 4
 
 # physics constants for range calculation
 C = 3e8                     # Speed of light (m/s)
@@ -86,12 +86,12 @@ def spi_read_thread(reader: RadarCubeReader):
 
             except Exception as e:
                 print(f"Error slicing radar cube in thread: {e}", file=sys.stderr)
-                continue # Skip this frame but continue reading
+                continue # skip this frame but continue reading
 
             with frame_lock:
-                # Store the current 'timestamp' as 'prev_timestamp' before updating 'timestamp'
+                # store the current 'timestamp' as 'prev_timestamp' before updating 'timestamp'
                 shared_data_state["prev_timestamp"] = shared_data_state["timestamp"]
-                shared_data_state["timestamp"] = current_frame_timestamp # Store the new timestamp
+                shared_data_state["timestamp"] = current_frame_timestamp
 
                 shared_data_state["frame"] = latest_frame_data
                 shared_data_state["frame_count"] += 1
@@ -157,7 +157,7 @@ def update_plot(frame):
     with frame_lock:
         current_frame_data = shared_data_state["frame"]
         frame_timestamp = shared_data_state["timestamp"]
-        prev_timestamp = shared_data_state["prev_timestamp"] # Get previous timestamp
+        prev_timestamp = shared_data_state["prev_timestamp"]
         frame_count = shared_data_state["frame_count"]
 
     updated_artists = [line_fft, line_real, line_imag, frame_rate_text, time_between_frames_text]
@@ -227,9 +227,9 @@ if __name__ == "__main__":
             fig,
             update_plot,
             init_func=init_plot,
-            interval=50, # Update plot every 50ms (20 fps) - adjust as needed
+            interval=50,
             blit=True,
-            cache_frame_data=False # Important for live data streaming
+            cache_frame_data=False 
         )
 
         print("Showing plot. Close the plot window to exit.")
