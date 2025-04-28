@@ -5,7 +5,7 @@ An unofficial Python library for streaming and parsing 1D Radar Cube data from T
 ## Project Description
 This project provides a Python interface to read and interpret 1D radar cube data streamed over SPI in real-time*. It is designed to work with setups where a TI mmWave sensor outputs processed radar cube data via SPI synchronized using a GPIO pin, and connected to a host PC via an FTDI USB-to-SPI adapter (such as the C232HM-DDHSL-0).
 
-**Note:** As of the current version, this library is specifically designed to consume the radar cube data format output by the firmware found in the companion repository: [`ti_iwrl6432_spi_data_stream`](https://github.com/loeens/ti_iwrl6432_spi_data_stream). It currently **only supports the TI IWRL6432BOOST** and does not support other data sources or formats out-of-the-box.
+**Note:** As of the current version, this library is specifically designed to consume the radar cube data format output by the firmware found in the repository [`ti_iwrl6432_spi_data_stream`](https://github.com/loeens/ti_iwrl6432_spi_data_stream). It currently **only supports the TI IWRL6432BOOST** and does not support other data sources or formats out-of-the-box.
 
 The library handles the low-level SPI communication and synchronization using the `pyftdi` library and parses the raw byte streams into structured data using `numpy` and `xarray` for easy handling and analysis of the radar cube dimensions.
 
@@ -30,7 +30,7 @@ The library handles the low-level SPI communication and synchronization using th
 
 * **Radar Cube data processing only** as previously mentioned.
 
-* **Limitations for Windows** due to `PyFtdi` only being officially supported on Linux and MacOS. Although there seem to be workarounds, please refer to the [official PyFtdi installation documentation](https://eblot.github.io/pyftdi/installation.html).
+* **Limitations for Windows** due to `pyftdi` only being officially supported on Linux and MacOS. Although there seem to be workarounds, please refer to the [official pyftdi installation documentation](https://eblot.github.io/pyftdi/installation.html).
 
 ## Usage
 ### Simple example
@@ -71,8 +71,8 @@ profile from one chirp and one antenna of each radar cube.
 
 ## Installation
 
-1. **PyFtdi installation:**
-The `PyFtdi` library requires prerequisites to access the FTDI device. Please follow the instructions below for your operating system. Refer to the [official PyFtdi installation documentation](https://eblot.github.io/pyftdi/installation.html) for the most up-to-date information.
+1. **pyftdi installation:**
+The `pyftdi` library requires prerequisites to access the FTDI device. Please follow the instructions below for your operating system. Refer to the [official pyftdi installation documentation](https://eblot.github.io/pyftdi/installation.html) for the most up-to-date information.
 
 2. **Clone the repository:**
     ```bash
