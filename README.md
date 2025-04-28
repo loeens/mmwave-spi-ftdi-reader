@@ -19,8 +19,8 @@ The library handles the low-level SPI communication and synchronization using th
     - continuously reads radar cube data based on a configured length and stores them in a `RadarCube1D` object
     - `RadarCube1D` is essentially a `xarray.DataArray`, allowing for easy accessibility of the cube's dimensions
 
-* **Should be also compatible with [OpenRadar](https://github.com/PreSenseRadar/OpenRadar) project's libraries:** 
-    - since the cube's data can be accessed as a NumPy array with `cube.data.values`, it should be fully compatible with the subsequent processing functions offered by the [OpenRadar](https://github.com/PreSenseRadar/OpenRadar) GitHub project (still needs verification!)
+* **Compatible with [OpenRadar](https://github.com/PreSenseRadar/OpenRadar) utils library** (`openradar.utils`):
+    - since the cube's data can be accessed as a NumPy array with `cube.data.values`, it should be fully compatible with the subsequent processing functions offered by the [OpenRadar](https://github.com/PreSenseRadar/OpenRadar) GitHub project
     
  
 ## Limitations
