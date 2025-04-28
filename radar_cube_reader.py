@@ -43,7 +43,7 @@ class RadarCubeReader:
                 spi_cs: int = 0,
                 spi_freq: float = 30e6,
                 spi_mode: int = 0,
-                spi_max_chunk_size: int = 65024
+                spi_max_chunk_size: int = 65280
                ):
         """
         Initializes the RadarCubeReader and the underlying SpiFtdiFrameReader.

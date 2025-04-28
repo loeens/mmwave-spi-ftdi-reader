@@ -31,7 +31,7 @@ class SpiFtdiFrameReader:
                 cs: int = 0,
                 freq: float = 30e6,
                 mode: int = 0,
-                max_chunk_size: int = 65024):
+                max_chunk_size: int = 65280):
         """
         Args:
             frame_length (int)  : Number of bytes that each call to `__next__()` will return. Must match the frame length
