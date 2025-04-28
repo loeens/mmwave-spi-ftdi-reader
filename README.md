@@ -24,7 +24,21 @@ The library handles the low-level SPI communication and synchronization using th
     
  
 ## Limitations
-* **Real-time operation** is limited to a certain Radar Cube size. I have made the experience, that anything up to **96 kByte** is able to be transferred within a framePeriod of 100ms. Anything above that will add substantial transferring time (> 50ms per frame). This means, that if real-time operation is important to you, you either have to reduce the size of the radar cube by adjusting chirp parameters or increasing the framePeriod to a longer duration.
+* **Real-time operation** is limited to a certain `Radar Cube Size` or `framePeriodicity` (time period between successive frames) or `Compliance Chirp Time`. Let me explain:
+    - SPI set at 30 MHz enables theoretical throughput rates of 30 MBit/s. So if your `Radar Cube size` is at 100 kByte, it will theoretically take: 
+        ```
+        Transfer Time = 100 kByte / (30 MBit/s / 8) = ~27ms
+        ```
+        to transfer. Realistically it is more around 35ms to 40ms with this setup.
+    - `framePeriocicity` is the time between successive frames, while the `Compliance Chirp Time` is the time within which chirping takes place. The latter is calculated as:
+        ```
+        Compliance Chirp Time = burstPeriodicity * numOfBurtstsInFrame
+        ```
+    - in summary, for real-time operation, meaning that you receive your radar cube within the `framePeriodicity` duration, the following expression must be fullfilled:
+        ```
+        Transfer Time < (framePeriodicity - Compliance Chirp Time)
+        ```
+        This can be achieved by decreasing the `Compliance Chirp Time` or increasing the `framePeriodicity` or downsizing the `Radar Cube Size` (e.g. by reducing number of antennas, number of range bins, number of chirps, etc.). In order to play around with these values, please refer to the [mmWave Sensing Estimator](https://dev.ti.com/gallery/view/mmwave/mmWaveSensingEstimator/ver/2.4.1/) (tab "Advanced Chirp Design and Tuning").
 
 * **Device support** is as of now limited to only the IWRL6432BOOST, as I do not have access to any other device.
 
@@ -86,5 +100,5 @@ The `pyftdi` library requires prerequisites to access the FTDI device. Please fo
     ```
 ## FAQ
 ### Why stream Radar Cube data and not ADC data?
-The Rangeproc DPU efficiently calculates the Range-FFT during the `framePeriod` (which at minimum is 100ms on the IWRL6432). Therefore the calculation of the Range-FFT doesn't add up on the processing time required for each frame on the host computer. Streaming of ADC data from TI's demo project is planned for a future update though.
+The Rangeproc DPU efficiently calculates the Range-FFT during the `framePeriodicity` (which at minimum is 100ms on the IWRL6432). Therefore the calculation of the Range-FFT doesn't add up on the processing time required for each frame on the host computer. Streaming of ADC data from TI's demo project is planned for a future update though.
 
