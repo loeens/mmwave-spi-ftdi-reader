@@ -7,8 +7,8 @@ import sys
 import numpy as np
 from pyftdi.usbtools import UsbToolsError
 
-from spi_ftdi_frame_reader import SpiFtdiFrameReader
-from data_types import RadarCube1D
+from .spi_ftdi_frame_reader import SpiFtdiFrameReader
+from .data_types.radar_cube import RadarCube1D
 
 class RadarCubeReader:
     """
