@@ -24,8 +24,8 @@ import matplotlib.animation as animation
 import threading
 import sys
 
-from radar_cube_reader import RadarCubeReader
-from data_types import RadarCube1D
+from mmwave_spi_ftdi_reader import RadarCubeReader
+from mmwave_spi_ftdi_reader.data_types import RadarCube1D
 
 # --- Configuration ---
 # radar parameters - Adjust these to match your sensor configuration
