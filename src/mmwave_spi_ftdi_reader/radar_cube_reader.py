@@ -68,12 +68,11 @@ class RadarCubeReader:
             RuntimeError: If the underlying SpiFtdiFrameReader cannot be initialized.
         """
 
-        # Validate inputs
+        # validate inputs
         if num_tx_antennas <= 0 or num_rx_antennas <= 0 or num_range_bins <= 0 or num_chirps_per_frame <= 0:
              raise ValueError("Antenna counts, range bins, and chirps per frame must be positive.")
         if num_chirps_per_frame % num_tx_antennas != 0:
             raise ValueError("num_chirps_per_frame must be divisible by num_tx_antennas.")
-        # Add validation that num_range_bins is divisible by 4, consistent with SpiFtdiFrameReader
         if num_range_bins % 4 != 0:
              raise ValueError("num_range_bins must be divisible by 4.")
 
@@ -124,7 +123,6 @@ class RadarCubeReader:
         """
         received_len = len(raw_frame_bytes)
         if received_len != self.radar_cube_n_bytes:
-            # this should ideally be caught by the SpiFtdiFrameReader, but check defensively.
             raise ValueError(f"Data length mismatch during parsing: Expected {self.radar_cube_n_bytes} bytes, received {received_len} bytes.")
 
         try:
@@ -203,8 +201,8 @@ class RadarCubeReader:
             raise RuntimeError("Cannot call __next__ on a closed RadarCubeReader.")
 
         try:
-            # get the next raw frame from the underlying reader.
-            # This call will block until the full frame (radar_cube_n_bytes) is read.
+            # get the next raw frame from the underlying reader
+            # (this call will block until the full frame (radar_cube_n_bytes) is read)
             raw_frame_bytes = next(self._spi_reader)
 
             # parse the raw bytes into a RadarCube1D object
@@ -231,7 +229,6 @@ class RadarCubeReader:
         """
         if self._spi_reader:
             print("Closing RadarCubeReader...")
-            # Use try...finally to ensure self._spi_reader is set to None
             try:
                  self._spi_reader.close()
             except Exception as e:

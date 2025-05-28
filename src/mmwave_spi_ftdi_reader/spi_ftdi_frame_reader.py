@@ -131,7 +131,7 @@ class SpiFtdiFrameReader:
                 except Exception as e:
                     raise StopIteration(f"Error during SPI chunk read: {e}") from e
 
-                # Each set of 4 Byte arrives in Byte order [Byte_D, Byte_C, Byte_B, Byte_A], so order needs to be switched
+                # each set of 4 Byte arrives in Byte order [Byte_D, Byte_C, Byte_B, Byte_A], so order needs to be switched
                 #   before adding it to frame_data.
                 #   (It is guaranteed that chunk_size is a multiple of 4 because max_chunk_size
                 #   and frame_length are validated in __init__.)
@@ -148,7 +148,6 @@ class SpiFtdiFrameReader:
 
                 remaining_bytes -= chunk_size
         except Exception as e:
-            # Any other unexpected error during frame read process stops iteration
              raise StopIteration(f"An unexpected error occurred during frame reading: {e}") from e
 
         # return the full frame as immutable bytes
